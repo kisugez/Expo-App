@@ -1,4 +1,3 @@
-
 import { View, Text, ScrollView, Image, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
@@ -539,7 +538,6 @@ export default function HomeScreen() {
     {
       idCategory: "2",
       idFood:'9',
-      category:'Chicken',
       recipeInstructions:"To make Chicken Parmesan, start by seasoning 2 boneless, skinless chicken breasts with salt and pepper, then coat each in flour, dip in beaten eggs, and cover with breadcrumbs mixed with grated Parmesan cheese. Heat 2 tablespoons of olive oil in a skillet over medium heat and cook the breaded chicken breasts for 4-5 minutes per side until golden brown and crispy. Transfer the chicken to a baking dish, top each breast with marinara sauce and shredded mozzarella cheese. Bake in a preheated oven at 190°C (375°F) for 15-20 minutes until the cheese is melted and bubbly. Garnish with fresh basil and serve over pasta or with a side salad.",
       recipeName: "Chicken Parmesan",
       recipeImage: "https://images.unsplash.com/photo-1632778149955-e80f8ceca2e8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -729,12 +727,19 @@ export default function HomeScreen() {
         </View>
 
         <View testID="categoryList">
-       
+          <Categories
+            categories={categories}
+            activeCategory={activeCategory}
+            handleChangeCategory={handleChangeCategory}
+          />
         </View>
 
         <View testID="foodList">
-
-          </View>
+          <FoodItems
+            foods={filteredfoods}
+            categories={categories}
+          />
+        </View>
       </ScrollView>
     </View>
   );

@@ -22,25 +22,41 @@ import {
   
     useEffect(() => {
       const fetchrecipes = async () => {
-        
-        };
-  
+        try {
+          const stored = await AsyncStorage.getItem("customrecipes");
+          if (stored) {
+            setrecipes(JSON.parse(stored));
+          }
+        } catch (error) {
+          console.error("Error fetching recipes:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
       fetchrecipes();
     }, []);
   
     const handleAddrecipe = () => {
-
+      navigation.navigate("RecipesFormScreen");
     };
   
     const handlerecipeClick = (recipe) => {
-
+      navigation.navigate("CustomRecipesScreen", { recipe });
     };
+
     const deleterecipe = async (index) => {
-    
+      try {
+        const updatedrecipes = [...recipes];
+        updatedrecipes.splice(index, 1);
+        await AsyncStorage.setItem("customrecipes", JSON.stringify(updatedrecipes));
+        setrecipes(updatedrecipes);
+      } catch (error) {
+        console.error("Error deleting recipe:", error);
+      }
     };
   
     const editrecipe = (recipe, index) => {
-
+      navigation.navigate("RecipesFormScreen", { recipeToEdit: recipe, recipeIndex: index });
     };
   
     return (
@@ -64,17 +80,27 @@ import {
               recipes.map((recipe, index) => (
                 <View key={index} style={styles.recipeCard} testID="recipeCard">
                   <TouchableOpacity testID="handlerecipeBtn" onPress={() => handlerecipeClick(recipe)}>
-                  
+                    {recipe.image ? (
+                      <Image source={{ uri: recipe.image }} style={styles.recipeImage} />
+                    ) : null}
                     <Text style={styles.recipeTitle}>{recipe.title}</Text>
                     <Text style={styles.recipeDescription} testID="recipeDescp">
-                  
+                      {recipe.description ?
+                        recipe.description.length > 50
+                          ? recipe.description.substring(0, 50) + "..."
+                          : recipe.description
+                        : ""}
                     </Text>
                   </TouchableOpacity>
   
                   {/* Edit and Delete Buttons */}
                   <View style={styles.actionButtonsContainer} testID="editDeleteButtons">
-                    
-                
+                    <TouchableOpacity style={styles.editButton} onPress={() => editrecipe(recipe, index)}>
+                      <Text style={styles.editButtonText}>Edit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.deleteButton} onPress={() => deleterecipe(index)}>
+                      <Text style={styles.deleteButtonText}>Delete</Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
               ))
@@ -187,4 +213,3 @@ import {
       fontSize: hp(1.8),
     },
   });
-  
