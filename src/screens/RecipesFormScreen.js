@@ -10,10 +10,18 @@ export default function RecipesFormScreen({ route, navigation }) {
   const [description, setDescription] = useState(
     recipeToEdit ? recipeToEdit.description : ""
   );
+  const [ingredients, setIngredients] = useState(
+    recipeToEdit && recipeToEdit.ingredients ? recipeToEdit.ingredients.join(", ") : ""
+  );
 
   const saverecipe = async () => {
     try {
-      const newrecipe = { title, image, description };
+      const newrecipe = {
+        title,
+        image,
+        description,
+        ingredients: ingredients.split(",").map(i => i.trim()),
+      };
       const stored = await AsyncStorage.getItem("customrecipes");
       let recipes = stored ? JSON.parse(stored) : [];
       if (recipeToEdit && typeof recipeIndex === "number") {
@@ -32,7 +40,7 @@ export default function RecipesFormScreen({ route, navigation }) {
   return (
     <View style={styles.container}>
       <TextInput
-        placeholder="Title"
+        placeholder="Recipe Name"
         value={title}
         onChangeText={setTitle}
         style={styles.input}
@@ -49,7 +57,13 @@ export default function RecipesFormScreen({ route, navigation }) {
         <Text style={styles.imagePlaceholder}>Upload Image URL</Text>
       )}
       <TextInput
-        placeholder="Description"
+        placeholder="Ingredients (comma separated)"
+        value={ingredients}
+        onChangeText={setIngredients}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Step-by-step Instructions"
         value={description}
         onChangeText={setDescription}
         multiline={true}
@@ -58,6 +72,9 @@ export default function RecipesFormScreen({ route, navigation }) {
       />
       <TouchableOpacity onPress={saverecipe} style={styles.saveButton}>
         <Text style={styles.saveButtonText}>Save recipe</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.saveButton}>
+        <Text style={styles.saveButtonText}>Back</Text>
       </TouchableOpacity>
     </View>
   );
